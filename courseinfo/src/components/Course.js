@@ -20,6 +20,15 @@ function Content({ course }) {
   );
 }
 
+function Sum({ course }) {
+  // console.log(props);
+  // const { course } = props;
+  const sum = course.reduce((acc, obj) => {
+    return acc + obj.exercises;
+  }, 0);
+  return <h4>Total of {sum} exercises</h4>;
+}
+
 function Course({ course }) {
   // console.log(course.parts);
 
@@ -28,6 +37,7 @@ function Course({ course }) {
       <Header course={course} />
       <div>
         <Content course={course.parts} />
+        <Sum course={course.parts} />
       </div>
     </>
   );
