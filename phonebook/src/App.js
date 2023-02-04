@@ -1,8 +1,9 @@
 import { useState } from "react";
+import { v4 as uuidv4 } from "uuid";
 
 const App = () => {
   const phonebook = [{ id: 1, name: "Arto Hellas" }];
-  const id = Math.floor(Math.random() * 10); // not great but for that small app is ok
+  const id = uuidv4();
 
   const [persons, setPersons] = useState(phonebook);
   const [newName, setNewName] = useState("please enter name...");
@@ -14,9 +15,14 @@ const App = () => {
       name: newName,
     };
 
-    setPersons(persons.concat(newPerson));
-    setNewName("");
-    console.log("person added :", newName);
+    const found = persons.find((el) => el.name === newName);
+    if (found) {
+      window.alert(`${newName} is already added to phonebook`);
+    } else {
+      setPersons(persons.concat(newPerson));
+      setNewName("");
+      console.log("person added :", newName);
+    }
   };
 
   const handleAddName = (e) => {
