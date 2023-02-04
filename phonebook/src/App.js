@@ -1,0 +1,80 @@
+import { useState } from "react";
+import { v4 as uuidv4 } from "uuid";
+
+import Filter from "./components/Filter";
+import Form from "./components/Form";
+import Persons from "./components/Persons";
+
+const App = () => {
+  const phonebook = [
+    { name: "Arto Hellas", number: "040-123456", id: 1 },
+    { name: "Ada Lovelace", number: "39-44-5323523", id: 2 },
+    { name: "Dan Abramov", number: "12-43-234345", id: 3 },
+    { name: "Mary Poppendieck", number: "39-23-6423122", id: 4 },
+  ];
+
+  const id = uuidv4();
+
+  const [persons, setPersons] = useState(phonebook);
+  const [newName, setNewName] = useState("please enter name...");
+  const [newNumber, setNewNumber] = useState("phone number...");
+  const [filter, setFilter] = useState("");
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const newPerson = {
+      id: id,
+      name: newName,
+      number: newNumber,
+    };
+
+    const found = persons.find((el) => el.name === newName);
+    if (found) {
+      window.alert(`${newName} is already added to phonebook`);
+    } else {
+      setPersons(persons.concat(newPerson));
+      setNewName("");
+    }
+  };
+
+  const handleAddName = (e) => {
+    setNewName(e.target.value);
+  };
+
+  const handleAddNumber = (e) => {
+    setNewNumber(e.target.value);
+  };
+
+  const handleFilter = (e) => {
+    setFilter(e.target.value);
+  };
+
+  const clearName = () => {
+    setNewName("");
+  };
+
+  const clearNumber = () => {
+    setNewNumber("");
+  };
+
+  return (
+    <>
+      <h2>Phonebook</h2>
+      <Filter filter={filter} handleFilter={handleFilter} />
+      <h4>Add a new person</h4>
+      <Form
+        handleSubmit={handleSubmit}
+        newName={newName}
+        newNumber={newNumber}
+        handleAddName={handleAddName}
+        handleAddNumber={handleAddNumber}
+        clearName={clearName}
+        clearNumber={clearNumber}
+      />
+      <h4>Numbers</h4>
+      <Persons persons={persons} filter={filter} />
+    </>
+  );
+};
+
+export default App;
