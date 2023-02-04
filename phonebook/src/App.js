@@ -1,6 +1,10 @@
 import { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 
+import Filter from "./components/Filter";
+import Form from "./components/Form";
+import Persons from "./components/Persons";
+
 const App = () => {
   const phonebook = [
     { name: "Arto Hellas", number: "040-123456", id: 1 },
@@ -30,30 +34,8 @@ const App = () => {
     } else {
       setPersons(persons.concat(newPerson));
       setNewName("");
-      console.log("person added :", newName);
     }
   };
-
-  // show filtered results if there is value in filter input
-  const isPersonsFiltered =
-    filter === ""
-      ? persons
-      : persons.filter((person) =>
-          person.name.toLowerCase().includes(filter.toLowerCase())
-        );
-  /*
-      const isPersonsFiltered = () => {
-    if (showAll) {
-      console.log("returning persons list");
-      return persons;
-    } else {
-      console.log("returning filtered persons list", filter);
-      return persons.filter((person) =>
-        person.name.toLowerCase().includes(filter.toLowerCase())
-      );
-    }
-  };
-  */
 
   const handleAddName = (e) => {
     setNewName(e.target.value);
@@ -71,46 +53,26 @@ const App = () => {
     setNewName("");
   };
 
-  const clearPhone = () => {
+  const clearNumber = () => {
     setNewNumber("");
   };
 
   return (
     <>
       <h2>Phonebook</h2>
-      <div>debug: filter - {filter}</div>
-      <input type="text" value={filter || ""} onChange={handleFilter} />
-      <form onSubmit={handleSubmit}>
-        <div>
-          name:{" "}
-          <input
-            type="text"
-            value={newName || ""}
-            onChange={handleAddName}
-            onFocus={clearName}
-          />
-        </div>
-        <div>
-          phone:{" "}
-          <input
-            type="text"
-            value={newNumber || ""}
-            onChange={handleAddNumber}
-            onFocus={clearPhone}
-          />
-        </div>
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
-      <h2>Numbers</h2>
-      <ul>
-        {isPersonsFiltered.map((person) => (
-          <li key={person.id}>
-            Name: {person.name} : {person.number}
-          </li>
-        ))}
-      </ul>
+      <Filter filter={filter} handleFilter={handleFilter} />
+      <h4>Add a new person</h4>
+      <Form
+        handleSubmit={handleSubmit}
+        newName={newName}
+        newNumber={newNumber}
+        handleAddName={handleAddName}
+        handleAddNumber={handleAddNumber}
+        clearName={clearName}
+        clearNumber={clearNumber}
+      />
+      <h4>Numbers</h4>
+      <Persons persons={persons} filter={filter} />
     </>
   );
 };
