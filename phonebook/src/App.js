@@ -7,12 +7,14 @@ const App = () => {
 
   const [persons, setPersons] = useState(phonebook);
   const [newName, setNewName] = useState("please enter name...");
+  const [newNumber, setNewNumber] = useState("phone number...");
 
   const handleSubmit = (e) => {
     e.preventDefault();
     const newPerson = {
       id: id,
       name: newName,
+      number: newNumber,
     };
 
     const found = persons.find((el) => el.name === newName);
@@ -29,14 +31,42 @@ const App = () => {
     setNewName(e.target.value);
   };
 
+  const handleAddNumber = (e) => {
+    setNewNumber(e.target.value);
+  };
+
+  const clearName = () => {
+    setNewName("");
+  };
+
+  const clearPhone = () => {
+    setNewNumber("");
+  };
+
   return (
     <div>
-      <div>debug: {newName}</div>
+      <div>
+        debug: {newName} {newNumber}
+      </div>
       <h2>Phonebook</h2>
       <form onSubmit={handleSubmit}>
         <div>
           name:{" "}
-          <input type="text" value={newName || ""} onChange={handleAddName} />
+          <input
+            type="text"
+            value={newName || ""}
+            onChange={handleAddName}
+            onFocus={clearName}
+          />
+        </div>
+        <div>
+          phone:{" "}
+          <input
+            type="text"
+            value={newNumber || ""}
+            onChange={handleAddNumber}
+            onFocus={clearPhone}
+          />
         </div>
         <div>
           <button type="submit">add</button>
@@ -45,7 +75,9 @@ const App = () => {
       <h2>Numbers</h2>
       <ul>
         {persons.map((person) => (
-          <li key={person.id}>{person.name}</li>
+          <li key={person.id}>
+            Name: {person.name} : {person.number}
+          </li>
         ))}
       </ul>
     </div>
