@@ -1,24 +1,28 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
+import axios from "axios";
 
 import Filter from "./components/Filter";
 import Form from "./components/Form";
 import Persons from "./components/Persons";
 
 const App = () => {
-  const phonebook = [
-    { name: "Arto Hellas", number: "040-123456", id: 1 },
-    { name: "Ada Lovelace", number: "39-44-5323523", id: 2 },
-    { name: "Dan Abramov", number: "12-43-234345", id: 3 },
-    { name: "Mary Poppendieck", number: "39-23-6423122", id: 4 },
-  ];
+  const url = `http://localhost:3001/persons`;
 
   const id = uuidv4();
 
-  const [persons, setPersons] = useState(phonebook);
+  const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState("please enter name...");
   const [newNumber, setNewNumber] = useState("phone number...");
   const [filter, setFilter] = useState("");
+
+  useEffect(() => {
+    axios.get(url).then((res) => {
+      console.log("promise fulfilled ", res.data);
+      const phonebook = res.data;
+      setPersons(phonebook);
+    });
+  }, [url]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
