@@ -18,9 +18,7 @@ const App = () => {
   const [filter, setFilter] = useState("");
 
   useEffect(() => {
-    personsService.getAll().then((res) => {
-      // console.log(res);
-      const phonebook = res.data;
+    personsService.getAll().then((phonebook) => {
       setPersons(phonebook);
     });
   }, []);
@@ -33,17 +31,8 @@ const App = () => {
       number: newNumber,
     };
 
-    /*const addPerson = () => {
-      axios.post(url, newPerson).then((res) => {
-        const person = res.data;
-        setPersons(persons.concat(person));
-        setNewName("");
-        setNewNumber("");
-      });
-    };*/
     const addPerson = () => {
-      personsService.create(newPerson).then((res) => {
-        const person = res.data;
+      personsService.create(newPerson).then((person) => {
         setPersons(persons.concat(person));
         setNewName("");
         setNewNumber("");

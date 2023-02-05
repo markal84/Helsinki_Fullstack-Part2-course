@@ -2,19 +2,23 @@ import axios from "axios";
 const url = "http://localhost:3001/persons";
 
 const getAll = () => {
-  return axios.get(url);
+  const req = axios.get(url);
+  return req.then((res) => res.data);
 };
 
 const create = (newObject) => {
-  return axios.post(url, newObject);
+  const req = axios.post(url, newObject);
+  return req.then((res) => res.data);
 };
 
 const update = (id, newObject) => {
-  return axios.put(`${url}/${id}`, newObject);
+  const req = axios.put(`${url}/${id}`, newObject);
+  return req.then((res) => res.data);
 };
 
 const remove = (id) => {
-  return axios.delete(`${url}/${id}`);
+  const req = axios.delete(`${url}/${id}`);
+  return req.then((res) => res.data);
 };
 
 export default { getAll, create, update, remove };
