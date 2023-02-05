@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
+import personsService from "./services/persons";
 import axios from "axios";
 
 import Filter from "./components/Filter";
@@ -17,12 +18,12 @@ const App = () => {
   const [filter, setFilter] = useState("");
 
   useEffect(() => {
-    axios.get(url).then((res) => {
-      // console.log("promise fulfilled ", res.data);
+    personsService.getAll().then((res) => {
+      // console.log(res);
       const phonebook = res.data;
       setPersons(phonebook);
     });
-  }, [url]);
+  }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -32,8 +33,16 @@ const App = () => {
       number: newNumber,
     };
 
-    const addPerson = () => {
+    /*const addPerson = () => {
       axios.post(url, newPerson).then((res) => {
+        const person = res.data;
+        setPersons(persons.concat(person));
+        setNewName("");
+        setNewNumber("");
+      });
+    };*/
+    const addPerson = () => {
+      personsService.create(newPerson).then((res) => {
         const person = res.data;
         setPersons(persons.concat(person));
         setNewName("");
