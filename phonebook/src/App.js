@@ -18,7 +18,7 @@ const App = () => {
 
   useEffect(() => {
     axios.get(url).then((res) => {
-      console.log("promise fulfilled ", res.data);
+      // console.log("promise fulfilled ", res.data);
       const phonebook = res.data;
       setPersons(phonebook);
     });
@@ -32,12 +32,20 @@ const App = () => {
       number: newNumber,
     };
 
+    const addPerson = () => {
+      axios.post(url, newPerson).then((res) => {
+        const person = res.data;
+        setPersons(persons.concat(person));
+        setNewName("");
+        setNewNumber("");
+      });
+    };
+
     const found = persons.find((el) => el.name === newName);
     if (found) {
       window.alert(`${newName} is already added to phonebook`);
     } else {
-      setPersons(persons.concat(newPerson));
-      setNewName("");
+      addPerson();
     }
   };
 
