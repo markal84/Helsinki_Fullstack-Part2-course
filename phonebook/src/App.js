@@ -1,15 +1,12 @@
 import { useState, useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
 import personsService from "./services/persons";
-import axios from "axios";
 
 import Filter from "./components/Filter";
 import Form from "./components/Form";
 import Persons from "./components/Persons";
 
 const App = () => {
-  const url = `http://localhost:3001/persons`;
-
   const id = uuidv4();
 
   const [persons, setPersons] = useState([]);
@@ -59,6 +56,13 @@ const App = () => {
     setFilter(e.target.value);
   };
 
+  const handleDelete = (person) => {
+    if (window.confirm(`Are you sure you want ot remove ${person.name}?`)) {
+      personsService.remove(person.id);
+      setPersons(persons.filter((p) => p.id !== person.id));
+    }
+  };
+
   const clearName = () => {
     setNewName("");
   };
@@ -82,7 +86,7 @@ const App = () => {
         clearNumber={clearNumber}
       />
       <h4>Numbers</h4>
-      <Persons persons={persons} filter={filter} />
+      <Persons persons={persons} filter={filter} handleDelete={handleDelete} />
     </>
   );
 };
