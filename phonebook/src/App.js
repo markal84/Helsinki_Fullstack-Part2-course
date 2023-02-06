@@ -59,13 +59,24 @@ const App = () => {
         )
       ) {
         const changedNumber = { ...found, number: newNumber };
-        personsService.update(found.id, changedNumber).then((person) => {
-          setPersons(persons.map((p) => (p.id !== found.id ? p : person)));
-          setConfirmMessage(`${person.name} number changed`);
-          setTimeout(() => {
-            setConfirmMessage(null);
-          }, 4000);
-        });
+        personsService
+          .update(found.id, changedNumber)
+          .then((person) => {
+            setPersons(persons.map((p) => (p.id !== found.id ? p : person)));
+            setConfirmMessage(`${person.name} number changed`);
+            setTimeout(() => {
+              setConfirmMessage(null);
+            }, 4000);
+          })
+          .catch((err) => {
+            setErrorMessage(
+              `User ${newName} has already been removed from server`
+            );
+            setPersons(persons.filter((p) => p.name !== newName));
+            setTimeout(() => {
+              setErrorMessage(null);
+            }, 5000);
+          });
       }
     }
   };
