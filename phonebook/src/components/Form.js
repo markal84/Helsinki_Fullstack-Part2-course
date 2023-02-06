@@ -22,23 +22,25 @@ function Form({
   clearNumber,
 }) {
   return (
-    <form onSubmit={handleSubmit}>
-      <Input
-        inputName="name"
-        value={newName}
-        handleChange={handleAddName}
-        handleFocus={clearName}
-      />
-      <Input
-        inputName="number"
-        value={newNumber}
-        handleChange={handleAddNumber}
-        handleFocus={clearNumber}
-      />
-      <div>
-        <button type="submit">add</button>
-      </div>
-    </form>
+    <>
+      <form onSubmit={handleSubmit}>
+        <Input
+          inputName="name"
+          value={newName}
+          handleChange={handleAddName}
+          handleFocus={clearName}
+        />
+        <Input
+          inputName="number"
+          value={newNumber}
+          handleChange={handleAddNumber}
+          handleFocus={clearNumber}
+        />
+        <div>
+          <button type="submit">add</button>
+        </div>
+      </form>
+    </>
   );
 }
 

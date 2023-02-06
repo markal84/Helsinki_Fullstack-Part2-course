@@ -36,11 +36,20 @@ const App = () => {
       });
     };
 
-    const found = persons.find((el) => el.name === newName);
-    if (found) {
-      window.alert(`${newName} is already added to phonebook`);
-    } else {
+    const found = persons.find((person) => person.name === newName);
+    if (!found) {
       addPerson();
+    } else {
+      if (
+        window.confirm(
+          `${newName} is already added to phonebook, replace the old number with a new one?`
+        )
+      ) {
+        const changedNumber = { ...found, number: newNumber };
+        personsService.update(found.id, changedNumber).then((person) => {
+          setPersons(persons.map((p) => (p.id !== found.id ? p : person)));
+        });
+      }
     }
   };
 
