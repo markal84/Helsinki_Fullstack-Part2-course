@@ -5,6 +5,7 @@ import personsService from "./services/persons";
 import Filter from "./components/Filter";
 import Form from "./components/Form";
 import Persons from "./components/Persons";
+import Notification from "./components/Notifications";
 
 const App = () => {
   const id = uuidv4();
@@ -13,6 +14,9 @@ const App = () => {
   const [newName, setNewName] = useState("please enter name...");
   const [newNumber, setNewNumber] = useState("phone number...");
   const [filter, setFilter] = useState("");
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [confirmMessage, setConfirmMessage] = useState(null);
+  const [successMessage, setSuccessMessage] = useState(null);
 
   useEffect(() => {
     personsService.getAll().then((phonebook) => {
@@ -29,11 +33,20 @@ const App = () => {
     };
 
     const addPerson = () => {
-      personsService.create(newPerson).then((person) => {
-        setPersons(persons.concat(person));
-        setNewName("");
-        setNewNumber("");
-      });
+      personsService
+        .create(newPerson)
+        .then((person) => {
+          setPersons(persons.concat(person));
+          setSuccessMessage(`${person.name} added to phonebook`);
+          setTimeout(() => {
+            setSuccessMessage(null);
+          }, 4000);
+          setNewName("");
+          setNewNumber("");
+        })
+        .catch((err) => {
+          console.log(err.message);
+        });
     };
 
     const found = persons.find((person) => person.name === newName);
@@ -48,6 +61,10 @@ const App = () => {
         const changedNumber = { ...found, number: newNumber };
         personsService.update(found.id, changedNumber).then((person) => {
           setPersons(persons.map((p) => (p.id !== found.id ? p : person)));
+          setConfirmMessage(`${person.name} number changed`);
+          setTimeout(() => {
+            setConfirmMessage(null);
+          }, 4000);
         });
       }
     }
@@ -83,6 +100,9 @@ const App = () => {
   return (
     <>
       <h2>Phonebook</h2>
+      <Notification message={errorMessage} className="message error" />
+      <Notification message={successMessage} className="message success" />
+      <Notification message={confirmMessage} className="message confirm" />
       <Filter filter={filter} handleFilter={handleFilter} />
       <h4>Add a new person</h4>
       <Form
