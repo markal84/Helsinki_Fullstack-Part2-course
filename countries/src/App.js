@@ -3,6 +3,9 @@ import React, { useState, useEffect } from 'react';
 
 import getAll from './services/countries';
 
+import Search from './components/Search';
+import Countries from './components/Countries';
+
 function App() {
   const [countries, setCountries] = useState([]);
   const [search, setSearch] = useState('');
@@ -22,6 +25,7 @@ function App() {
           country.name.common.toLowerCase().includes(search.toLowerCase())
         );
 
+  // contidions for countries list render
   const isMultiDisplay = foundCountries.length > 10;
   const isEqualOne = foundCountries.length === 1;
 
@@ -32,34 +36,12 @@ function App() {
   return (
     <>
       <h1>Countries</h1>
-      <div>
-        find countries{' '}
-        <input type="text" value={search || ''} onChange={handleSearch} />
-      </div>
+      <Search search={search} handleSearch={handleSearch} />
       <div>
         {isMultiDisplay ? (
           <p>Too many matches, specify another filter</p>
         ) : (
-          foundCountries.map((country) => {
-            return !isEqualOne ? (
-              <p key={country.cca2}>{country.name.common}</p>
-            ) : (
-              <div key={country.cca2}>
-                <h2>{country.name.common}</h2>
-                <p>Capital: {country.capital}</p>
-                <p>Area: {country.area}</p>
-                <h4>Languages:</h4>
-                <ul>
-                  {Object.values(country.languages).map((lang) => (
-                    <li key={Math.random()}>{lang}</li>
-                  ))}
-                </ul>
-                <div>
-                  <img src={country.flags.svg} alt="country flag" />
-                </div>
-              </div>
-            );
-          })
+          <Countries foundCountries={foundCountries} isEqualOne={isEqualOne} />
         )}
       </div>
     </>
