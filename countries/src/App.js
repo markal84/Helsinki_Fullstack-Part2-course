@@ -26,22 +26,39 @@ function App() {
         );
 
   // contidions for countries list render
-  const isMultiDisplay = foundCountries.length > 10;
+  const isMultiDisplay = foundCountries.length >= 10;
   const isEqualOne = foundCountries.length === 1;
 
   const handleSearch = (e) => {
     setSearch(e.target.value);
   };
 
+  const resetSearch = () => {
+    setSearch('');
+  };
+
+  const handleShow = (e) => {
+    // console.log('clicked', e.name.common);
+    setSearch(e.name.common);
+  };
+
   return (
     <>
       <h1>Countries</h1>
-      <Search search={search} handleSearch={handleSearch} />
+      <Search
+        search={search}
+        handleSearch={handleSearch}
+        resetSearch={resetSearch}
+      />
       <div>
         {isMultiDisplay ? (
           <p>Too many matches, specify another filter</p>
         ) : (
-          <Countries foundCountries={foundCountries} isEqualOne={isEqualOne} />
+          <Countries
+            foundCountries={foundCountries}
+            isEqualOne={isEqualOne}
+            handleShow={handleShow}
+          />
         )}
       </div>
     </>

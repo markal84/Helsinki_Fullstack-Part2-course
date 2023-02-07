@@ -17,7 +17,11 @@ function CountryInfo({ country }) {
         ))}
       </ul>
       <div>
-        <img src={country.flags.svg} alt="country flag" />
+        <img
+          style={{ width: '200px' }}
+          src={country.flags.svg}
+          alt="country flag"
+        />
       </div>
     </div>
   );
