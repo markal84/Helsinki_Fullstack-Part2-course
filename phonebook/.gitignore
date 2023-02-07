@@ -10,6 +10,7 @@
 
 # production
 /build
+**/content_no_task
 
 # misc
 .DS_Store

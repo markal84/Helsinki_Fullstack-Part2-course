@@ -1,24 +1,28 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
+import personsService from "./services/persons";
 
 import Filter from "./components/Filter";
 import Form from "./components/Form";
 import Persons from "./components/Persons";
+import Notification from "./components/Notifications";
 
 const App = () => {
-  const phonebook = [
-    { name: "Arto Hellas", number: "040-123456", id: 1 },
-    { name: "Ada Lovelace", number: "39-44-5323523", id: 2 },
-    { name: "Dan Abramov", number: "12-43-234345", id: 3 },
-    { name: "Mary Poppendieck", number: "39-23-6423122", id: 4 },
-  ];
-
   const id = uuidv4();
 
-  const [persons, setPersons] = useState(phonebook);
+  const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState("please enter name...");
   const [newNumber, setNewNumber] = useState("phone number...");
   const [filter, setFilter] = useState("");
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [confirmMessage, setConfirmMessage] = useState(null);
+  const [successMessage, setSuccessMessage] = useState(null);
+
+  useEffect(() => {
+    personsService.getAll().then((phonebook) => {
+      setPersons(phonebook);
+    });
+  }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -28,12 +32,52 @@ const App = () => {
       number: newNumber,
     };
 
-    const found = persons.find((el) => el.name === newName);
-    if (found) {
-      window.alert(`${newName} is already added to phonebook`);
+    const addPerson = () => {
+      personsService
+        .create(newPerson)
+        .then((person) => {
+          setPersons(persons.concat(person));
+          setSuccessMessage(`${person.name} added to phonebook`);
+          setTimeout(() => {
+            setSuccessMessage(null);
+          }, 4000);
+          setNewName("");
+          setNewNumber("");
+        })
+        .catch((err) => {
+          console.log(err.message);
+        });
+    };
+
+    const found = persons.find((person) => person.name === newName);
+    if (!found) {
+      addPerson();
     } else {
-      setPersons(persons.concat(newPerson));
-      setNewName("");
+      if (
+        window.confirm(
+          `${newName} is already added to phonebook, replace the old number with a new one?`
+        )
+      ) {
+        const changedNumber = { ...found, number: newNumber };
+        personsService
+          .update(found.id, changedNumber)
+          .then((person) => {
+            setPersons(persons.map((p) => (p.id !== found.id ? p : person)));
+            setConfirmMessage(`${person.name} number changed`);
+            setTimeout(() => {
+              setConfirmMessage(null);
+            }, 4000);
+          })
+          .catch((err) => {
+            setErrorMessage(
+              `User ${newName} has already been removed from server`
+            );
+            setPersons(persons.filter((p) => p.name !== newName));
+            setTimeout(() => {
+              setErrorMessage(null);
+            }, 5000);
+          });
+      }
     }
   };
 
@@ -49,6 +93,13 @@ const App = () => {
     setFilter(e.target.value);
   };
 
+  const handleDelete = (person) => {
+    if (window.confirm(`Are you sure you want ot remove ${person.name}?`)) {
+      personsService.remove(person.id);
+      setPersons(persons.filter((p) => p.id !== person.id));
+    }
+  };
+
   const clearName = () => {
     setNewName("");
   };
@@ -60,6 +111,9 @@ const App = () => {
   return (
     <>
       <h2>Phonebook</h2>
+      <Notification message={errorMessage} className="message error" />
+      <Notification message={successMessage} className="message success" />
+      <Notification message={confirmMessage} className="message confirm" />
       <Filter filter={filter} handleFilter={handleFilter} />
       <h4>Add a new person</h4>
       <Form
@@ -72,7 +126,7 @@ const App = () => {
         clearNumber={clearNumber}
       />
       <h4>Numbers</h4>
-      <Persons persons={persons} filter={filter} />
+      <Persons persons={persons} filter={filter} handleDelete={handleDelete} />
     </>
   );
 };
