@@ -1,4 +1,6 @@
-function CountryInfo({ country }) {
+import Weather from './Weather';
+
+function CountryInfo({ country, weather }) {
   const info = { capital: 'Capital:', area: 'Area:', languages: 'Languages:' };
 
   return (
@@ -22,6 +24,9 @@ function CountryInfo({ country }) {
           src={country.flags.svg}
           alt="country flag"
         />
+      </div>
+      <div style={{ marginTop: '2rem' }}>
+        <Weather country={country} weather={weather} />
       </div>
     </div>
   );

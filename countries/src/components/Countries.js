@@ -1,7 +1,7 @@
 import Country from './Country';
 import CountryInfo from './CountryInfo';
 
-function Countries({ foundCountries, isEqualOne, handleShow }) {
+function Countries({ foundCountries, isEqualOne, handleShow, weather }) {
   return foundCountries.map((country) => {
     return !isEqualOne ? (
       <Country
@@ -10,7 +10,7 @@ function Countries({ foundCountries, isEqualOne, handleShow }) {
         handleShow={() => handleShow(country)}
       />
     ) : (
-      <CountryInfo key={country.cca2} country={country} />
+      <CountryInfo key={country.cca2} country={country} weather={weather} />
     );
   });
 }

@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from 'react';
 
-import getAll from './services/countries';
+import { getAll, getWeather } from './services/countries';
 
 import Search from './components/Search';
 import Countries from './components/Countries';
@@ -9,6 +9,7 @@ import Countries from './components/Countries';
 function App() {
   const [countries, setCountries] = useState([]);
   const [search, setSearch] = useState('');
+  const [weather, setWeather] = useState({});
 
   // get list of all countries from api and store them in countries variable
   useEffect(() => {
@@ -35,11 +36,13 @@ function App() {
 
   const resetSearch = () => {
     setSearch('');
+    setWeather({});
   };
 
   const handleShow = (e) => {
-    // console.log('clicked', e.name.common);
     setSearch(e.name.common);
+    // get the weather for selected country and store it in weather var
+    getWeather(e.name.common).then((res) => setWeather(res.data.current));
   };
 
   return (
@@ -58,6 +61,7 @@ function App() {
             foundCountries={foundCountries}
             isEqualOne={isEqualOne}
             handleShow={handleShow}
+            weather={weather}
           />
         )}
       </div>
